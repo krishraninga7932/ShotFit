@@ -1,0 +1,125 @@
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPackage } from "../../Redux/addpackageSlice";
+import { FiCheckCircle, FiXCircle } from "react-icons/fi";
+import { ref, update, get } from "firebase/database";
+import { db } from "../../../firebase";
+import { toast, ToastContainer } from "react-toastify";
+
+const Package = () => {
+  const dispatch = useDispatch();
+  const { list } = useSelector((state) => state.addPackage);
+  const currentUser = useSelector((state) => state.auth.user);
+
+  // fetch packages
+  useEffect(() => {
+    dispatch(fetchPackage());
+  }, [dispatch]);
+
+  if (!list || list.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <p className="text-gray-400 text-lg text-center">
+          No packages available right now. Please check back later!
+        </p>
+      </div>
+    );
+  }
+
+  const buyPackage = async (pkg) => {
+    if (!currentUser) {
+      return toast.error("Please login first!");
+    }
+    try {
+      const userRef = ref(db, "users/" + currentUser.uid);
+      const snapshot = await get(userRef);
+      let existingPackages = [];
+      if (snapshot.exists() && snapshot.val().package) {
+        existingPackages = snapshot.val().package;
+        if (!Array.isArray(existingPackages)) {
+          existingPackages = [existingPackages];
+        }
+      }
+
+      const updatedPackages = [
+        ...existingPackages,
+        { name: pkg.name, price: pkg.price },
+      ];
+
+      await update(userRef, { package: updatedPackages });
+
+      toast.success("Package purchased successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong!");
+    }
+  };
+
+  return (
+    <div
+      id="packages"
+      className="max-w-[1320px] mx-auto px-4 py-[80px]"
+    >
+      <ToastContainer autoClose={3000} />
+      <h2 className="text-[35px] font-bold uppercase tracking-wider text-center mb-16">
+        Our Fitness Packages
+      </h2>
+
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {list.map((pkg, index) => (
+          <div
+            key={index}
+            className="bg-gradient-to-br from-[#080707] via-[#1e1e1e] to-[#450506] p-6 shadow-xl hover:scale-105 transition-transform duration-300 relative overflow-hidden"
+          >
+            {/* Top Ribbon */}
+            <div className="absolute top-0 left-0 bg-[#DD4F52] px-4 py-1 text-white font-semibold">
+              {pkg.duration}
+            </div>
+
+            <h3 className="text-2xl font-bold [text-shadow:0px_0px_15px_#DD4F52] text-white mt-8 mb-4">
+              {pkg.name}
+            </h3>
+
+            <p className="text-gray-300 text-[15px] mb-6">{pkg.description}</p>
+
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center gap-2 text-white">
+                {pkg.diet ? (
+                  <FiCheckCircle className="text-green-400" />
+                ) : (
+                  <FiXCircle className="text-red-400" />
+                )}
+                <span>{pkg.diet ? "Diet Included" : "No Diet"}</span>
+              </div>
+
+              <div className="flex items-center gap-2 text-white">
+                {pkg.suppliment ? (
+                  <FiCheckCircle className="text-green-400" />
+                ) : (
+                  <FiXCircle className="text-red-400" />
+                )}
+                <span>
+                  {pkg.suppliment ? "Supplement Included" : "No Supplement"}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center mt-6">
+              <span className="text-xl font-bold text-[#DD4F52]">
+                ₹{pkg.price}
+              </span>
+              <button
+                onClick={() => buyPackage(pkg)}
+                className="bg-[#DD4F52] hover:bg-[#a93a3c] text-white px-4 py-2 cursor-pointer font-semibold transition"
+              >
+                Buy Now
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Package;
