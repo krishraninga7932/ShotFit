@@ -7,7 +7,7 @@ const Banner = () => {
       className="h-[100vh] absolute top-0 w-full bg-cover bg-top bg-no-repeat flex items-center justify-center"
       style={{
         backgroundImage: `url(${hero})`,
-        boxShadow: "inset 0 0 0 1000px rgba(0,0,0,0.2)",
+        // boxShadow: "inset 0 0 0 1000px rgba(0,0,0,0.2)",
       }}
     >
       <div className="max-w-[1320px] mx-auto px-[15px]">
