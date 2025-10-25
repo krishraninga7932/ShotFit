@@ -82,7 +82,7 @@ const Footer = () => {
             Used for cardio workouts, treadmills, bikes, and ellipticals improve
             heart health, boost stamina, and help burn calories.
           </p>
-          <ul className="flex items-center gap-6 mt-12 py-5 border-y-[1px] border-[#DD4F52] justify-center">
+          <ul className="flex flex-wrap items-center gap-6 mt-12 py-5 border-y-[1px] border-[#DD4F52] w-full max-w-full justify-center">
             {[
               { name: "Home", link: "#" },
               { name: "Packages", link: "#packages" },

@@ -78,7 +78,7 @@ const Adminpackage = () => {
 
   return (
     <div className="max-w-[1320px] mx-auto px-[15px] py-[80px] mt-[100vh]">
-      <ToastContainer autoClose={3000} />
+      {/* <ToastContainer autoClose={3000} /> */}
       {/* button */} {/* Package Form */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">

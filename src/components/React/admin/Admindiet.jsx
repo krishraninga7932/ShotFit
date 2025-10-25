@@ -94,7 +94,7 @@ const Admindiet = () => {
 
   return (
     <div className="max-w-[1320px] mx-auto px-[15px] py-[80px]">
-      <ToastContainer autoClose={3000} />
+      {/* <ToastContainer autoClose={3000} /> */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-[#151515] p-6 rounded-xl shadow-lg w-[100%] max-w-xl mx-auto relative">
